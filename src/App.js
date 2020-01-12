@@ -1,7 +1,9 @@
 import React, { useState, useRef } from "react";
-import { Button, Table, Input, Icon } from "antd";
+import { Layout, Menu, Button, Table, Input, Icon } from "antd";
 import Highlighter from "react-highlight-words";
 import "./App.css";
+
+const { Header, Content, Footer } = Layout;
 
 /*
  * Code on this page is a modified version of the example on ant design page: https://ant.design/components/layout/
@@ -14,7 +16,8 @@ for (let i = 0; i < 46; i++) {
   data.push({
     key: i,
     id: i,
-    company: `Company ${i}`
+    company: `Company ${i}`,
+    action: "select, edit, delete"
   });
 }
 
@@ -121,18 +124,45 @@ const App = () => {
       dataIndex: "company",
       key: "company",
       ...getColumnSearchProps("company")
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action"
     }
   ];
 
   return (
-    <div>
-      <div style={{ marginBottom: 16 }}>
-        <span style={{ marginLeft: 8 }}>
-          {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-        </span>
-      </div>
-      <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
-    </div>
+    <Layout>
+      <Header className="header">
+        <div className="logo" />
+        <Menu
+          theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={["2"]}
+          style={{ lineHeight: "64px" }}
+        >
+          <Menu.Item key="1">nav 1</Menu.Item>
+          <Menu.Item key="2">nav 2</Menu.Item>
+          <Menu.Item key="3">nav 3</Menu.Item>
+        </Menu>
+      </Header>
+      <Content style={{ padding: "0 50px" }}>
+        <div style={{ marginBottom: 16 }}>
+          <span style={{ marginLeft: 8 }}>
+            {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
+          </span>
+        </div>
+        <Table
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={data}
+        />
+      </Content>
+      <Footer style={{ textAlign: "center" }}>
+        Ant Design ©2018 Created by Ant UED
+      </Footer>
+    </Layout>
   );
 };
 
