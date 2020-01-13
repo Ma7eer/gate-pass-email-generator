@@ -1,9 +1,18 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Layout, Menu, Button, Table, Input, Icon } from "antd";
 import Highlighter from "react-highlight-words";
+import axios from "axios";
 import "./App.css";
 
 const { Header, Content, Footer } = Layout;
+
+// TODO:
+// ant design font sizes
+// pick router
+// when click on nav bar we navigate
+// create form for adding new company
+// plug it in to add new company
+// give notification when new company added
 
 /*
  * Code on this page is a modified version of the example on ant design page: https://ant.design/components/layout/
@@ -11,27 +20,27 @@ const { Header, Content, Footer } = Layout;
  * The code was refactored to use react hooks
  */
 
-const data = [];
-for (let i = 0; i < 46; i++) {
-  data.push({
-    key: i,
-    id: i,
-    company: `Company ${i}`,
-    action: "select, edit, delete"
-  });
-}
-
 const App = () => {
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]); // Check here to configure the default column
+  const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
 
   const nodeRef = useRef(null);
 
-  const onSelectChange = selectedRowKeys => {
-    console.log("selectedRowKeys changed: ", selectedRowKeys);
-    setSelectedRowKeys(selectedRowKeys);
-  };
+  useEffect(() => {
+    axios.get("http://localhost:3001/companies").then(res => {
+      let d = [];
+      for (let i = 0; i < res.data.length; i++) {
+        d.push({
+          key: res.data[i].id,
+          id: res.data[i].id,
+          company: res.data[i].name,
+          action: "select, edit, delete"
+        });
+      }
+      setData(d);
+    });
+  }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -106,13 +115,6 @@ const App = () => {
       )
   });
 
-  const rowSelection = {
-    selectedRowKeys,
-    onChange: onSelectChange
-  };
-
-  const hasSelected = selectedRowKeys.length > 0;
-
   const columns = [
     {
       title: "Id",
@@ -142,22 +144,13 @@ const App = () => {
           defaultSelectedKeys={["2"]}
           style={{ lineHeight: "64px" }}
         >
-          <Menu.Item key="1">nav 1</Menu.Item>
-          <Menu.Item key="2">nav 2</Menu.Item>
+          <Menu.Item key="1">Home</Menu.Item>
+          <Menu.Item key="2">Add Company</Menu.Item>
           <Menu.Item key="3">nav 3</Menu.Item>
         </Menu>
       </Header>
-      <Content style={{ padding: "0 50px" }}>
-        <div style={{ marginBottom: 16 }}>
-          <span style={{ marginLeft: 8 }}>
-            {hasSelected ? `Selected ${selectedRowKeys.length} items` : ""}
-          </span>
-        </div>
-        <Table
-          rowSelection={rowSelection}
-          columns={columns}
-          dataSource={data}
-        />
+      <Content style={{ padding: "0 50px", marginTop: "2%" }}>
+        <Table columns={columns} dataSource={data} />
       </Content>
       <Footer style={{ textAlign: "center" }}>
         Ant Design ©2018 Created by Ant UED
