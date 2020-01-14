@@ -8,7 +8,7 @@ import { url } from "../data/api";
 
 import Content from "../components/Content";
 
-const path = `${url}/companies`;
+const path = `${url}/employees`;
 
 /*
  * Code on this page is a modified version of the example on ant design page: https://ant.design/components/layout/
@@ -16,7 +16,7 @@ const path = `${url}/companies`;
  * The code was refactored to use react hooks
  */
 
-const HomePage = () => {
+const EmployeesListPage = () => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -28,9 +28,10 @@ const HomePage = () => {
       let d = [];
       for (let i = 0; i < res.data.length; i++) {
         d.push({
-          key: res.data[i].company_id,
-          id: res.data[i].company_id,
-          company: res.data[i].company_name.toUpperCase(),
+          key: res.data[i].employee_id,
+          id: res.data[i].employee_id,
+          name: res.data[i].employee_name.toUpperCase(),
+          civilId: res.data[i].employee_civilid,
           action: "select, edit, delete"
         });
       }
@@ -118,10 +119,16 @@ const HomePage = () => {
       key: "id"
     },
     {
-      title: "Company",
-      dataIndex: "company",
-      key: "company",
-      ...getColumnSearchProps("company")
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      ...getColumnSearchProps("name")
+    },
+    {
+      title: "Civil ID",
+      dataIndex: "civilId",
+      key: "civilId",
+      ...getColumnSearchProps("civilId")
     },
     {
       title: "Action",
@@ -146,4 +153,4 @@ const HomePage = () => {
   return <Content columns={columns} data={data} />;
 };
 
-export default HomePage;
+export default EmployeesListPage;
