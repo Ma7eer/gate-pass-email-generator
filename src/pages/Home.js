@@ -127,10 +127,10 @@ const HomePage = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: () => (
+      render: (col, row) => (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Button type="primary" style={{ margin: "2px" }}>
-            <Link to="/employeesList">Select</Link>
+            <Link to={`/employeesList/${row.id}`}>Select</Link>
           </Button>
           <Button type="default" style={{ margin: "2px" }}>
             Edit

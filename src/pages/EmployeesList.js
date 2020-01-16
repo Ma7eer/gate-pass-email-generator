@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button, Input, Icon } from "antd";
 import Highlighter from "react-highlight-words";
 import axios from "axios";
@@ -20,11 +20,14 @@ const EmployeesListPage = () => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [rowData, setRowData] = useState([]);
+  let { company_id } = useParams();
 
   const nodeRef = useRef(null);
 
   useEffect(() => {
-    axios.get(path).then(res => {
+    axios.get(path + `/?id=${company_id}`).then(res => {
       let d = [];
       for (let i = 0; i < res.data.length; i++) {
         d.push({
@@ -37,7 +40,7 @@ const EmployeesListPage = () => {
       }
       setData(d);
     });
-  }, []);
+  }, [company_id]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -112,6 +115,17 @@ const EmployeesListPage = () => {
       )
   });
 
+  const onSelectChange = (selectedRowKeys, row) => {
+    console.log(row);
+    setSelectedRowKeys(selectedRowKeys);
+    setRowData(row);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange
+  };
+
   const columns = [
     {
       title: "Id",
@@ -134,23 +148,47 @@ const EmployeesListPage = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: () => (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Button type="primary" style={{ margin: "2px" }}>
-            <Link to="/employeesList">Select</Link>
-          </Button>
-          <Button type="default" style={{ margin: "2px" }}>
-            Edit
-          </Button>
-          <Button type="danger" style={{ margin: "2px" }}>
-            Delete
-          </Button>
-        </div>
-      )
+      render: () => {
+        let name = "";
+        let civilId = "";
+        let dataString = "";
+        for (let i = 0; i < rowData.length; i++) {
+          if (name.length > 0) {
+            name = name + "," + rowData[i].name;
+          } else {
+            name = rowData[i].name;
+          }
+          if (civilId.length > 0) {
+            civilId = civilId + "," + rowData[i].civilId;
+          } else {
+            civilId = rowData[i].civilId;
+          }
+        }
+        if (dataString.length > 0) {
+        }
+        if (name.length > 0 && civilId.length > 0) {
+          dataString = `${name}/${civilId}`;
+        } else {
+          dataString = "";
+        }
+        return (
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Button type="primary" style={{ margin: "2px" }}>
+              <Link to={`/generatedEmail/${dataString}`}>Select</Link>
+            </Button>
+            <Button type="default" style={{ margin: "2px" }}>
+              Edit
+            </Button>
+            <Button type="danger" style={{ margin: "2px" }}>
+              Delete
+            </Button>
+          </div>
+        );
+      }
     }
   ];
 
-  return <Content columns={columns} data={data} />;
+  return <Content rowSelection={rowSelection} columns={columns} data={data} />;
 };
 
 export default EmployeesListPage;

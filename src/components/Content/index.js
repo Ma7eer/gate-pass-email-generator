@@ -5,9 +5,14 @@ import { Layout, Table } from "antd";
 
 const { Content } = Layout;
 
-const ContentComponent = ({ columns, data }) => (
+const ContentComponent = ({ columns, data, rowSelection }) => (
   <Content style={{ padding: "0 50px", marginTop: "2%" }}>
-    <Table columns={columns} dataSource={data} bordered />
+    <Table
+      rowSelection={rowSelection}
+      columns={columns}
+      dataSource={data}
+      bordered
+    />
   </Content>
 );
 
