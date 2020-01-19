@@ -3,15 +3,10 @@ import { Link } from "react-router-dom";
 import { Button, Input, Icon } from "antd";
 import Highlighter from "react-highlight-words";
 import axios from "axios";
-import netlifyAuth from "netlify-identity-widget";
 
 import { url } from "../data/api";
 
 import Content from "../components/Content";
-
-// netlifyAuth.init({
-//   container: "#netlify-modal" // defaults to document.body,
-// });
 
 const path = `${url}/companies`;
 
