@@ -3,10 +3,15 @@ import { Link } from "react-router-dom";
 import { Button, Input, Icon } from "antd";
 import Highlighter from "react-highlight-words";
 import axios from "axios";
+import netlifyAuth from "netlify-identity-widget";
 
 import { url } from "../data/api";
 
 import Content from "../components/Content";
+
+// netlifyAuth.init({
+//   container: "#netlify-modal" // defaults to document.body,
+// });
 
 const path = `${url}/companies`;
 
@@ -143,7 +148,16 @@ const HomePage = () => {
     }
   ];
 
-  return <Content columns={columns} data={data} />;
+  return (
+    <>
+      {/*<!-- Add a simpler button:
+    Simple button that will open the modal.
+      -->*/}
+      <div data-netlify-identity-button>Login with Netlify Identity</div>
+      {/* <button onClick={() => netlifyAuth.open("login")}>login</button> */}
+      <Content columns={columns} data={data} />
+    </>
+  );
 };
 
 export default HomePage;
