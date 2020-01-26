@@ -1,8 +1,9 @@
-import React from "react";
-import { Route, Switch } from "react-router-dom";
+import React, { useRef, useEffect } from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { Layout } from "antd";
 import "./App.css";
 
+import LoginPage from "./pages/Login";
 import HomePage from "./pages/Home";
 import EmployeesListPage from "./pages/EmployeesList";
 import GeneratedEmailPage from "./pages/GeneratedEmail";
@@ -10,16 +11,23 @@ import GeneratedEmailPage from "./pages/GeneratedEmail";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 
-// TODO:
-// plug it in to add new company
-// give notification when new company added
-// when we click on delete button company gets deleted
-// when we click on edit button we go to edit page
-// all above should have notification
+// initiate Authenticated Route component
+const AuthenticatedRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={props =>
+      window.netlifyIdentity && window.netlifyIdentity.currentUser() ? (
+        <Component {...props} />
+      ) : (
+        <Redirect to="/" />
+      )
+    }
+  />
+);
 
 const navigationMenuItems = [
   {
-    path: "/",
+    path: "/Home",
     name: "Home"
   }
 ];
@@ -29,7 +37,8 @@ const App = () => {
     <Layout>
       <Header navigationMenuItems={navigationMenuItems} />
       <Switch>
-        <Route exact path="/" component={HomePage} />
+        <Route exact path="/" component={LoginPage} />
+        <AuthenticatedRoute path="/Home" component={HomePage} />
         <Route
           path="/employeesList/:company_id"
           component={EmployeesListPage}

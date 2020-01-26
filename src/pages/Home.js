@@ -143,16 +143,7 @@ const HomePage = () => {
     }
   ];
 
-  return (
-    <>
-      {/*<!-- Add a simpler button:
-    Simple button that will open the modal.
-      -->*/}
-      <div data-netlify-identity-button>Login with Netlify Identity</div>
-      {/* <button onClick={() => netlifyAuth.open("login")}>login</button> */}
-      <Content columns={columns} data={data} />
-    </>
-  );
+  return <Content columns={columns} data={data} />;
 };
 
 export default HomePage;
