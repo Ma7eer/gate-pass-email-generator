@@ -24,18 +24,22 @@ const HomePage = () => {
   const nodeRef = useRef(null);
 
   useEffect(() => {
-    axios.get(path).then(res => {
-      let d = [];
-      for (let i = 0; i < res.data.length; i++) {
-        d.push({
-          key: res.data[i].company_id,
-          id: res.data[i].company_id,
-          company: res.data[i].company_name.toUpperCase(),
-          action: "select, edit, delete"
-        });
-      }
-      setData(d);
-    });
+    axios
+      .get(path, {
+        headers: { Authorization: "Bearer " + localStorage.getItem("jwtToken") }
+      })
+      .then(res => {
+        let d = [];
+        for (let i = 0; i < res.data.length; i++) {
+          d.push({
+            key: res.data[i].company_id,
+            id: res.data[i].company_id,
+            company: res.data[i].company_name.toUpperCase(),
+            action: "select, edit, delete"
+          });
+        }
+        setData(d);
+      });
   }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
