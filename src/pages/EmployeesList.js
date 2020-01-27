@@ -26,24 +26,24 @@ const EmployeesListPage = () => {
 
   const nodeRef = useRef(null);
 
+  // , {
+  //   headers: { Authorization: "Bearer " + localStorage.getItem("jwtToken") }
+  // }
+
   useEffect(() => {
-    axios
-      .get(path + `/?id=${company_id}`, {
-        headers: { Authorization: "Bearer " + localStorage.getItem("jwtToken") }
-      })
-      .then(res => {
-        let d = [];
-        for (let i = 0; i < res.data.length; i++) {
-          d.push({
-            key: res.data[i].employee_id,
-            id: res.data[i].employee_id,
-            name: res.data[i].employee_name.toUpperCase(),
-            civilId: res.data[i].employee_civilid,
-            action: "select, edit, delete"
-          });
-        }
-        setData(d);
-      });
+    axios.get(path + `/?id=${company_id}`).then(res => {
+      let d = [];
+      for (let i = 0; i < res.data.length; i++) {
+        d.push({
+          key: res.data[i].employee_id,
+          id: res.data[i].employee_id,
+          name: res.data[i].employee_name.toUpperCase(),
+          civilId: res.data[i].employee_civilid,
+          action: "select, edit, delete"
+        });
+      }
+      setData(d);
+    });
   }, [company_id]);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {

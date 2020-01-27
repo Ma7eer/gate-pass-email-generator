@@ -16,6 +16,12 @@ const path = `${url}/companies`;
  * The code was refactored to use react hooks
  */
 
+// {
+//   headers: {
+//     Authorization: "Bearer " + localStorage.getItem("jwtToken");
+//   }
+// }
+
 const HomePage = () => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -24,9 +30,21 @@ const HomePage = () => {
   const nodeRef = useRef(null);
 
   useEffect(() => {
+    // console.log(
+    //   JSON.parse(localStorage.getItem("gotrue.user")).token.access_token
+    // );
+    const headers = {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers":
+        "Origin, X-Requested-With, Content-Type, Accept",
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Methods": "*",
+      "Access-Control-Max-Age": "2592000",
+      "Access-Control-Allow-Credentials": "true"
+    };
     axios
       .get(path, {
-        headers: { Authorization: "Bearer " + localStorage.getItem("jwtToken") }
+        headers
       })
       .then(res => {
         let d = [];
