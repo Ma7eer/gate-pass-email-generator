@@ -16,12 +16,6 @@ const path = `${url}/companies`;
  * The code was refactored to use react hooks
  */
 
-// {
-//   headers: {
-//     Authorization: "Bearer " + localStorage.getItem("jwtToken");
-//   }
-// }
-
 const HomePage = () => {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState("");
@@ -30,9 +24,6 @@ const HomePage = () => {
   const nodeRef = useRef(null);
 
   useEffect(() => {
-    // console.log(
-    //   JSON.parse(localStorage.getItem("gotrue.user")).token.access_token
-    // );
     const headers = {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers":
@@ -165,7 +156,15 @@ const HomePage = () => {
     }
   ];
 
-  return <Content columns={columns} data={data} />;
+  const addRow = item => {
+    setData(() => {
+      let d = data;
+      d.push(item);
+      return d;
+    });
+  };
+
+  return <Content columns={columns} data={data} addRow={addRow} />;
 };
 
 export default HomePage;

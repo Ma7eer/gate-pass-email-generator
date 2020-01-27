@@ -11,10 +11,16 @@ let path = `${url}/companies`;
 
 const { Content } = Layout;
 
-const ContentComponent = ({ columns, data, rowSelection }) => {
+const ContentComponent = ({ columns, data, rowSelection, addRow }) => {
   const [companyName, setCompanyName] = useState("");
-  const handleSubmit = () => {
-    axios.post(path, companyName);
+  const handleSubmit = e => {
+    e.preventDefault();
+    axios.post(path, { companyName: companyName }).then(res => {
+      if (res.status === 201) {
+        console.log("success");
+        addRow(companyName);
+      }
+    });
   };
   const [showInput, setShowInput] = useState("HIDDEN");
   const handleClick = () => {
