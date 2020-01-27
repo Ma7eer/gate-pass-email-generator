@@ -5,7 +5,7 @@ import { Layout, Menu } from "antd";
 
 const { Header } = Layout;
 
-const HeaderComponent = ({ navigationMenuItems }) => (
+const HeaderComponent = () => (
   <Header className="header">
     <div className="logo" />
     <Menu
@@ -14,17 +14,13 @@ const HeaderComponent = ({ navigationMenuItems }) => (
       defaultSelectedKeys={["0"]}
       style={{ lineHeight: "64px" }}
     >
-      {navigationMenuItems.map((item, index) => (
-        <Menu.Item key={index}>
-          <Link to={item.path}>{item.name}</Link>
+      {window.netlifyIdentity && window.netlifyIdentity.currentUser() ? (
+        <Menu.Item key="0">
+          <Link to="/Home">Home</Link>
         </Menu.Item>
-      ))}
+      ) : null}
     </Menu>
   </Header>
 );
-
-HeaderComponent.propTypes = {
-  navigationMenuItems: PropTypes.array
-};
 
 export default HeaderComponent;

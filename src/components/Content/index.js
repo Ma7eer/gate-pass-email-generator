@@ -13,11 +13,12 @@ const { Content } = Layout;
 
 const ContentComponent = ({ columns, data, rowSelection, addRow }) => {
   const [companyName, setCompanyName] = useState("");
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    axios.post(path, { companyName: companyName }).then(res => {
+    await setCompanyName("");
+    await axios.post(path, { companyName: companyName }).then(res => {
       if (res.status === 201) {
-        console.log("success");
+        console.log(res);
         addRow(companyName);
       }
     });
@@ -61,6 +62,7 @@ const ContentComponent = ({ columns, data, rowSelection, addRow }) => {
               required
               // value={companyName}
               onChange={e => setCompanyName(e.target.value)}
+              value={companyName}
             />
           </Form.Item>
           <Form.Item>

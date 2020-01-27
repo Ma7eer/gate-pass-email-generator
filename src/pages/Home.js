@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Button, Input, Icon } from "antd";
 import Highlighter from "react-highlight-words";
 import axios from "axios";
+import toastr from "toastr";
+import "toastr/build/toastr.min.css";
 
 import { url } from "../data/api";
 
@@ -23,32 +25,36 @@ const HomePage = () => {
 
   const nodeRef = useRef(null);
 
+  toastr.options = {
+    // positionClass: "toast-top-full-width",
+    // hideDuration: 300,
+    timeOut: 2000
+  };
+
+  const fetchAllCompanies = async () => {
+    // loading
+
+    try {
+      let res = await axios.get(path);
+      let dataArray = [];
+      for (let i = 0; i < res.data.length; i++) {
+        dataArray.push({
+          key: res.data[i].company_id,
+          id: res.data[i].company_id,
+          company: res.data[i].company_name.toUpperCase(),
+          action: "select, edit, delete"
+        });
+      }
+      setData(dataArray);
+      toastr.success(`Data fetched successfully`);
+    } catch (e) {
+      console.log(e);
+      toastr.error(`Failed to fetch data`);
+    }
+  };
+
   useEffect(() => {
-    const headers = {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers":
-        "Origin, X-Requested-With, Content-Type, Accept",
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Methods": "*",
-      "Access-Control-Max-Age": "2592000",
-      "Access-Control-Allow-Credentials": "true"
-    };
-    axios
-      .get(path, {
-        headers
-      })
-      .then(res => {
-        let d = [];
-        for (let i = 0; i < res.data.length; i++) {
-          d.push({
-            key: res.data[i].company_id,
-            id: res.data[i].company_id,
-            company: res.data[i].company_name.toUpperCase(),
-            action: "select, edit, delete"
-          });
-        }
-        setData(d);
-      });
+    fetchAllCompanies();
   }, []);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
@@ -124,6 +130,23 @@ const HomePage = () => {
       )
   });
 
+  const handleDelete = async rowData => {
+    try {
+      if (
+        // eslint-disable-next-line no-restricted-globals
+        confirm(`Are you sure you want to delete ${rowData.company}?`)
+      ) {
+        await axios.delete(path, { data: { id: rowData.id } });
+        toastr.success("Deleted company successfully");
+      } else {
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+      toastr.error("Failed to delete company");
+    }
+  };
+
   const columns = [
     {
       title: "Id",
@@ -148,7 +171,11 @@ const HomePage = () => {
           <Button type="default" style={{ margin: "2px" }}>
             Edit
           </Button>
-          <Button type="danger" style={{ margin: "2px" }}>
+          <Button
+            type="danger"
+            style={{ margin: "2px" }}
+            onClick={() => handleDelete(row)}
+          >
             Delete
           </Button>
         </div>
@@ -159,9 +186,16 @@ const HomePage = () => {
   const addRow = item => {
     setData(() => {
       let d = data;
-      d.push(item);
+      // console.log(data.length);
+      d.push({
+        key: data.length + 1,
+        id: data.length + 1,
+        company: item.toUpperCase(),
+        action: "select, edit, delete"
+      });
       return d;
     });
+    toastr.success(`Added company data successfully`);
   };
 
   return <Content columns={columns} data={data} addRow={addRow} />;

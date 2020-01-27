@@ -25,17 +25,10 @@ const AuthenticatedRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-const navigationMenuItems = [
-  {
-    path: "/Home",
-    name: "Home"
-  }
-];
-
 const App = () => {
   return (
     <Layout>
-      <Header navigationMenuItems={navigationMenuItems} />
+      <Header />
       <Switch>
         <Route exact path="/" component={LoginPage} />
         <AuthenticatedRoute path="/Home" component={HomePage} />
