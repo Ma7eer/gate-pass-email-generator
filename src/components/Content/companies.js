@@ -16,9 +16,9 @@ const ContentComponent = ({ columns, data, rowSelection, addRow }) => {
   const handleSubmit = async e => {
     e.preventDefault();
     await setCompanyName("");
-    await axios.post(path, { companyName: companyName }).then(res => {
+    await axios.post(path, { company_name: companyName }).then(res => {
       if (res.status === 201) {
-        console.log(res);
+        // console.log(res);
         addRow(companyName);
       }
     });

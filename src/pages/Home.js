@@ -8,7 +8,7 @@ import "toastr/build/toastr.min.css";
 
 import { url } from "../data/api";
 
-import Content from "../components/Content";
+import Content from "../components/Content/companies";
 
 const path = `${url}/companies`;
 
@@ -39,7 +39,7 @@ const HomePage = () => {
       let dataArray = [];
       for (let i = 0; i < res.data.length; i++) {
         dataArray.push({
-          key: res.data[i].company_id,
+          key: i,
           id: res.data[i].company_id,
           company: res.data[i].company_name.toUpperCase(),
           action: "select, edit, delete"
@@ -130,23 +130,6 @@ const HomePage = () => {
       )
   });
 
-  const handleDelete = async rowData => {
-    try {
-      if (
-        // eslint-disable-next-line no-restricted-globals
-        confirm(`Are you sure you want to delete ${rowData.company}?`)
-      ) {
-        await axios.delete(path, { data: { id: rowData.id } });
-        toastr.success("Deleted company successfully");
-      } else {
-        return;
-      }
-    } catch (e) {
-      console.log(e);
-      toastr.error("Failed to delete company");
-    }
-  };
-
   const columns = [
     {
       title: "Id",
@@ -184,8 +167,8 @@ const HomePage = () => {
   ];
 
   const addRow = item => {
-    setData(() => {
-      let d = data;
+    setData(prevState => {
+      let d = [...prevState];
       // console.log(data.length);
       d.push({
         key: data.length + 1,
@@ -196,6 +179,33 @@ const HomePage = () => {
       return d;
     });
     toastr.success(`Added company data successfully`);
+  };
+
+  const handleDelete = async rowData => {
+    try {
+      if (
+        // eslint-disable-next-line no-restricted-globals
+        confirm(`Are you sure you want to delete ${rowData.company}?`)
+      ) {
+        await axios.delete(path, { data: { id: rowData.id } });
+        await setData(prevState => {
+          let arr = [...prevState];
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].id === rowData.id) {
+              arr.splice(i, 1);
+            }
+          }
+          console.log(arr);
+          return arr;
+        });
+        toastr.success("Deleted company successfully");
+      } else {
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+      toastr.error("Failed to delete company");
+    }
   };
 
   return <Content columns={columns} data={data} addRow={addRow} />;

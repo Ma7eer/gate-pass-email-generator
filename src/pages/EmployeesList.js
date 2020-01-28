@@ -3,10 +3,12 @@ import { Link, useParams } from "react-router-dom";
 import { Button, Input, Icon } from "antd";
 import Highlighter from "react-highlight-words";
 import axios from "axios";
+import toastr from "toastr";
+import "toastr/build/toastr.min.css";
 
 import { url } from "../data/api";
 
-import Content from "../components/Content";
+import Content from "../components/Content/employees";
 
 const path = `${url}/employees`;
 
@@ -35,7 +37,7 @@ const EmployeesListPage = () => {
       let d = [];
       for (let i = 0; i < res.data.length; i++) {
         d.push({
-          key: res.data[i].employee_id,
+          key: i,
           id: res.data[i].employee_id,
           name: res.data[i].employee_name.toUpperCase(),
           civilId: res.data[i].employee_civilid,
@@ -192,7 +194,31 @@ const EmployeesListPage = () => {
     }
   ];
 
-  return <Content rowSelection={rowSelection} columns={columns} data={data} />;
+  const addRow = items => {
+    setData(prevState => {
+      let d = [...prevState];
+      // console.log(data.length);
+      d.push({
+        key: data.length + 1,
+        id: data.length + 1,
+        name: items.employeeName.toUpperCase(),
+        civilId: items.employeeCivilId,
+        action: "select, edit, delete"
+      });
+      return d;
+    });
+    toastr.success(`Added company data successfully`);
+  };
+
+  return (
+    <Content
+      rowSelection={rowSelection}
+      columns={columns}
+      data={data}
+      companyId={company_id}
+      addRow={addRow}
+    />
+  );
 };
 
 export default EmployeesListPage;

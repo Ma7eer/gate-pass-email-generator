@@ -11,7 +11,7 @@ CREATE TABLE employees
 employee_id SERIAL NOT NULL ,
 employee_name VARCHAR(255) NOT NULL,
 employee_civilId VARCHAR(255) NOT NULL UNIQUE,
-company_id INT UNIQUE REFERENCES companies(company_id)
+company_id INT REFERENCES companies(company_id)
 );
 
 INSERT INTO companies (company_name)
