@@ -5,6 +5,7 @@ const GeneratedEmailPage = () => {
   const [date, setDate] = useState("");
   const emailRef = useRef(null);
   let { name, civilId } = useParams();
+
   return (
     <>
       <button
@@ -81,22 +82,16 @@ const GeneratedEmailPage = () => {
           </thead>
 
           <tbody>
-            <tr>
-              <td style={{ border: "1px solid black", padding: "10px" }}>
-                {name}
-              </td>
-              <td style={{ border: "1px solid black", padding: "10px" }}>
-                {civilId}
-              </td>
-            </tr>
-            <tr>
-              <td style={{ border: "1px solid black", padding: "10px" }}>
-                Eve
-              </td>
-              <td style={{ border: "1px solid black", padding: "10px" }}>
-                Jackson
-              </td>
-            </tr>
+            {name.split(",").map((n, index) => (
+              <tr key={index}>
+                <td style={{ border: "1px solid black", padding: "10px" }}>
+                  {name.split(",")[index]}
+                </td>
+                <td style={{ border: "1px solid black", padding: "10px" }}>
+                  {civilId.split(",")[index]}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
 

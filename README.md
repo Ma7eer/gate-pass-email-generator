@@ -19,3 +19,10 @@ VALUES ('renardet');
 
 INSERT INTO employees (employee_name, employee_civilId, company_id)
 VALUES ('Giorgio Barboni', 123456, 1);
+
+future plans:
+
+1. when you delete company, delete its empliyees
+2. make it so that u can't submit with out selecting a date
+3. edge case: when i press home page login text on button disapears
+4. refactor code (make it clean), useReducer?

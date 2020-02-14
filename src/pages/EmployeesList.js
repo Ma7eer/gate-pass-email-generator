@@ -24,13 +24,10 @@ const EmployeesListPage = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [rowData, setRowData] = useState([]);
+  const [urlDataString, setUrlDataString] = useState("");
   let { company_id } = useParams();
 
   const nodeRef = useRef(null);
-
-  // , {
-  //   headers: { Authorization: "Bearer " + localStorage.getItem("jwtToken") }
-  // }
 
   useEffect(() => {
     axios.get(path + `/?id=${company_id}`).then(res => {
@@ -122,9 +119,37 @@ const EmployeesListPage = () => {
   });
 
   const onSelectChange = (selectedRowKeys, row) => {
-    console.log(row);
+    // console.log(row);
     setSelectedRowKeys(selectedRowKeys);
     setRowData(row);
+  };
+
+  const handleDelete = async rowData => {
+    try {
+      // console.log(rowData);
+      if (
+        // eslint-disable-next-line no-restricted-globals
+        confirm(`Are you sure you want to delete ${rowData.name}?`)
+      ) {
+        await axios.delete(path, { data: { id: rowData.id } });
+        await setData(prevState => {
+          let arr = [...prevState];
+          for (let i = 0; i < arr.length; i++) {
+            if (arr[i].id === rowData.id) {
+              arr.splice(i, 1);
+            }
+          }
+          console.log(arr);
+          return arr;
+        });
+        toastr.success("Deleted employee successfully");
+      } else {
+        return;
+      }
+    } catch (e) {
+      console.log(e);
+      toastr.error("Failed to delete employee");
+    }
   };
 
   const rowSelection = {
@@ -154,7 +179,7 @@ const EmployeesListPage = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: () => {
+      render: (col, row) => {
         let name = "";
         let civilId = "";
         let dataString = "";
@@ -174,18 +199,21 @@ const EmployeesListPage = () => {
         }
         if (name.length > 0 && civilId.length > 0) {
           dataString = `${name}/${civilId}`;
+          setUrlDataString(dataString);
         } else {
           dataString = "";
+          setUrlDataString(dataString);
         }
         return (
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Button type="primary" style={{ margin: "2px" }}>
-              <Link to={`/generatedEmail/${dataString}`}>Select</Link>
-            </Button>
             <Button type="default" style={{ margin: "2px" }}>
               Edit
             </Button>
-            <Button type="danger" style={{ margin: "2px" }}>
+            <Button
+              type="danger"
+              style={{ margin: "2px" }}
+              onClick={() => handleDelete(row)}
+            >
               Delete
             </Button>
           </div>
@@ -211,13 +239,18 @@ const EmployeesListPage = () => {
   };
 
   return (
-    <Content
-      rowSelection={rowSelection}
-      columns={columns}
-      data={data}
-      companyId={company_id}
-      addRow={addRow}
-    />
+    <>
+      <Button type="primary" style={{ margin: "2px" }} onClick={() => rowData.length > 0 ? null : toastr.info(`Please select employee`)}>
+      {rowData.length > 0 ? <Link to={`/generatedEmail/${urlDataString}`}>Select</Link> : "Select"}       
+      </Button>
+      <Content
+        rowSelection={rowSelection}
+        columns={columns}
+        data={data}
+        companyId={company_id}
+        addRow={addRow}
+      />
+    </>
   );
 };
 
