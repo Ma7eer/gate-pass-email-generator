@@ -3,9 +3,41 @@ import { useParams } from "react-router-dom";
 
 const GeneratedEmailPage = () => {
   const [date, setDate] = useState("");
+  const [dayOfTheWeek, setDayOfTheWeek] = useState("");
   const emailRef = useRef(null);
   let { name, civilId } = useParams();
 
+  const getDayOfTheWeek = selectedDate => {
+    let dateFormatted = new Date(selectedDate);
+    let dayIntegerCode = dateFormatted.getUTCDay();
+    switch (dayIntegerCode) {
+      case 0:
+        setDayOfTheWeek("Sunday");
+        break;
+      case 1:
+        setDayOfTheWeek("Monday");
+        break;
+      case 2:
+        setDayOfTheWeek("Tuesday");
+        break;
+      case 3:
+        setDayOfTheWeek("Wednesday");
+        break;
+      case 4:
+        setDayOfTheWeek("Thursday");
+        break;
+      case 5:
+        setDayOfTheWeek("Friday");
+        break;
+      case 6:
+        setDayOfTheWeek("Saturday");
+        break;
+
+      default:
+        setDayOfTheWeek("");
+        break;
+    }
+  };
   return (
     <>
       <button
@@ -42,6 +74,7 @@ const GeneratedEmailPage = () => {
           id="date"
           value={date}
           onChange={e => {
+            getDayOfTheWeek(e.target.value);
             setDate(e.target.value);
           }}
         />
@@ -100,7 +133,9 @@ const GeneratedEmailPage = () => {
         <p>
           This is for{" "}
           <mark>
-            <strong>Sunday {date}</strong>
+            <strong>
+              {dayOfTheWeek} {date}
+            </strong>
           </mark>
         </p>
       </div>
