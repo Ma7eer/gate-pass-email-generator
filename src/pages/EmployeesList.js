@@ -30,14 +30,14 @@ const EmployeesListPage = () => {
   const nodeRef = useRef(null);
 
   useEffect(() => {
-    axios.get(path + `/?id=${company_id}`).then(res => {
+    axios.get(path + `/${company_id}`).then(res => {
       let d = [];
-      for (let i = 0; i < res.data.length; i++) {
+      for (let i = 0; i < res.data.rows.length; i++) {
         d.push({
           key: i,
-          id: res.data[i].employee_id,
-          name: res.data[i].employee_name.toUpperCase(),
-          civilId: res.data[i].employee_civilid,
+          id: res.data.rows[i].employee_id,
+          name: res.data.rows[i].employee_name.toUpperCase(),
+          civilId: res.data.rows[i].employee_civilid,
           action: "select, edit, delete"
         });
       }
@@ -240,8 +240,18 @@ const EmployeesListPage = () => {
 
   return (
     <>
-      <Button type="primary" style={{ margin: "2px" }} onClick={() => rowData.length > 0 ? null : toastr.info(`Please select employee`)}>
-      {rowData.length > 0 ? <Link to={`/generatedEmail/${urlDataString}`}>Select</Link> : "Select"}       
+      <Button
+        type="primary"
+        style={{ margin: "2px" }}
+        onClick={() =>
+          rowData.length > 0 ? null : toastr.info(`Please select employee`)
+        }
+      >
+        {rowData.length > 0 ? (
+          <Link to={`/generatedEmail/${urlDataString}`}>Select</Link>
+        ) : (
+          "Select"
+        )}
       </Button>
       <Content
         rowSelection={rowSelection}
